@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\API\AccountController;
+use App\Http\Controllers\API\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
+Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::middleware('auth:api')->group(function () {
+    // Routes for accounts
+    Route::get('/accounts', [AccountController::class, 'allAccounts']);
+    Route::post('/accounts/create', [AccountController::class, 'createAccount']);
+    Route::get('/accounts/view/{accountId}', [AccountController::class, 'viewAccount']);
+    Route::put('/accounts/update/{accountId}', [AccountController::class, 'updateAccount']);
+    Route::delete('/accounts/delete/{accountId}', [AccountController::class, 'deleteAccount']);
+
+    // Routes for transactions
+    Route::get('/transactions', [AccountController::class, 'allTransactions']);
+    Route::post('/transactions/create', [AccountController::class, 'createTransaction']);
+    Route::get('/transactions/view/{transactionId}', [AccountController::class, 'viewTransaction']);
+    Route::delete('/transactions/delete/{transactionId}', [AccountController::class, 'deleteTransaction']);
+
 });
