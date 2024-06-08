@@ -3,15 +3,24 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/username/ggabank_app
-    - /bin/cp -r * $DEPLOYPATH
+    - echo "Copying files to $DEPLOYPATH" >> $DEPLOYPATH/deployment.log
+    - /bin/cp -r * $DEPLOYPATH >> $DEPLOYPATH/deployment.log 2>&1
     - cd $DEPLOYPATH
-    - cp .env.example .env
-    - composer install --no-dev --prefer-dist
-    - npm install
-    - npm run production
-    - php artisan key:generate
-    - php artisan migrate --force
-    - chown -R username:username $DEPLOYPATH
-    - chmod -R 755 $DEPLOYPATH
-    - chmod -R 775 $DEPLOYPATH/storage
-    - chmod -R 775 $DEPLOYPATH/bootstrap/cache
+    - echo "Copying .env.example to .env" >> deployment.log
+    - cp .env.example .env >> deployment.log 2>&1
+    - echo "Installing Composer dependencies" >> deployment.log
+    - composer install --no-dev --prefer-dist >> deployment.log 2>&1
+    - echo "Installing npm dependencies" >> deployment.log
+    - npm install >> deployment.log 2>&1
+    - echo "Building frontend assets" >> deployment.log
+    - npm run production >> deployment.log 2>&1
+    - echo "Generating application key" >> deployment.log
+    - php artisan key:generate >> deployment.log 2>&1
+    - echo "Running database migrations" >> deployment.log
+    - php artisan migrate --force >> deployment.log 2>&1
+    - echo "Setting file permissions" >> deployment.log
+    - chown -R username:username $DEPLOYPATH >> deployment.log 2>&1
+    - chmod -R 755 $DEPLOYPATH >> deployment.log 2>&1
+    - chmod -R 775 $DEPLOYPATH/storage >> deployment.log 2>&1
+    - chmod -R 775 $DEPLOYPATH/bootstrap/cache >> deployment.log 2>&1
+    - echo "Deployment completed" >> deployment.log
