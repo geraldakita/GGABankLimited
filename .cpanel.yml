@@ -2,7 +2,7 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/username/ggabank_app
+    - export DEPLOYPATH=/home/username/ggabanklimited
     - echo "Copying files to $DEPLOYPATH" >> $DEPLOYPATH/deployment.log
     - /bin/cp -r * $DEPLOYPATH >> $DEPLOYPATH/deployment.log 2>&1
     - cd $DEPLOYPATH
