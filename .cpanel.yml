@@ -1,43 +1,17 @@
-version: '1.0'
-
-# The deployment jobs
+# .cpanel.yml
+---
 deployment:
   tasks:
-    - name: Checkout Branch
-      action: /usr/bin/git checkout development
-
-    - name: Pull Latest Code
-      action: /usr/bin/git pull origin development
-
-    - name: Copy Environment File
-      action: cp .env.example .env
-
-    - name: Generate Application Key
-      action: /usr/local/bin/php artisan key:generate
-
-    - name: Install Composer Dependencies
-      action: /usr/local/bin/composer install --no-dev --prefer-dist --optimize-autoloader
-
-    - name: Install Node.js Dependencies
-      action: /usr/local/bin/npm install
-
-    - name: Run Migrations
-      action: /usr/local/bin/php artisan migrate --force
-
-    - name: Build Frontend Assets
-      action: /usr/local/bin/npm run prod
-
-    - name: Clear Cache
-      action: /usr/local/bin/php artisan config:cache
-
-    - name: Optimize Application
-      action: /usr/local/bin/php artisan optimize
-
-# Optional: post deployment hooks
-post_deploy:
-  tasks:
-    - name: Set Permissions
-      action: /bin/chmod -R 775 storage bootstrap/cache
-
-    - name: Restart Queue Worker
-      action: /usr/local/bin/php artisan queue:restart
+    - export DEPLOYPATH=/home/username/ggabank_app
+    - /bin/cp -r * $DEPLOYPATH
+    - cd $DEPLOYPATH
+    - cp .env.example .env
+    - composer install --no-dev --prefer-dist
+    - npm install
+    - npm run production
+    - php artisan key:generate
+    - php artisan migrate --force
+    - chown -R username:username $DEPLOYPATH
+    - chmod -R 755 $DEPLOYPATH
+    - chmod -R 775 $DEPLOYPATH/storage
+    - chmod -R 775 $DEPLOYPATH/bootstrap/cache
