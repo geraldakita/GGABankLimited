@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::post('/signup', [AuthController::class, 'signup'])->name('signup');
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 
+Route::post('send-email', [AccountController::class, 'sendmail']);
+
 Route::middleware('auth:api')->group(function () {
     // Auth Routes
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

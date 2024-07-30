@@ -8,11 +8,39 @@ use App\Models\Transaction;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
 {
     //
+
+    public function sendmail(Request $request)
+    {
+        $request->validate([
+            'to' => 'required|email',
+            'subject' => 'required|string',
+            'body' => 'required|string',
+        ]);
+
+        $to = $request->input('to');
+        $subject = $request->input('subject');
+        $body = $request->input('body');
+
+        try {
+            Mail::raw($body, function ($message) use ($to, $subject) {
+                $message->to($to)
+                    ->subject($subject)
+                    ->from(env('MAIL_FROM_ADDRESS'), env('MAIL_FROM_NAME'));
+            });
+
+            return $this->sendResponse([], 'Email sent successfully');
+        } catch (\Exception $e) {
+            return $this->sendError('Email could not be sent.', ['error' => $e->getMessage()]);
+        }
+    }
+
+
     public function createAccount(Request $request): JsonResponse
     {
         $userId = Auth::id();
